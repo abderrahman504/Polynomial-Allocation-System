@@ -2,6 +2,12 @@ package linkedLists;
 
 public interface ILinkedList 
 {
+
+    /**
+    * Inserts a specified element at the specified position in the list.
+    * @param index
+    * @param element
+    */
     public void add(Object element, int index);
     /**
     * Inserts the specified element at the end of the list.
