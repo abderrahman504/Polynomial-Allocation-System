@@ -21,7 +21,7 @@ public class SingleLinkedList implements ILinkedList
 
     SingleLinkedList(Object[] elements)
     {
-        size = elements.length;//Add some stuff mate!
+        size = elements.length;
         for (Object i : elements)
         {
             this.add(i);
@@ -30,13 +30,13 @@ public class SingleLinkedList implements ILinkedList
 
     SingleLinkedList()
     {
-        size = 0;//Add some more stuff.
+        size = 0;
         head = null;
         tail = null;
     }
 
     
-    public void add(Object element) //Should consider the possibility that the list is empty when the method is called;
+    public void add(Object element)
     {
         Node newNode = new Node(element, null);
         tail.next = newNode;
@@ -46,8 +46,7 @@ public class SingleLinkedList implements ILinkedList
     }
 
     
-    //Adds element to the list at position index, pushing the element at that position forwards.
-    public void add(Object element, int index) throws IndexOutOfBoundsException //Should throw exception if index is out of bounds.
+    public void add(Object element, int index) throws IndexOutOfBoundsException
     {
         if (index < 0 || index > size-1) throw new IndexOutOfBoundsException("Added Index is out of bounds.");
         Node newNode;
