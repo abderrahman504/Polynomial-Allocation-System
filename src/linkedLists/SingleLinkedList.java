@@ -19,6 +19,19 @@ public class SingleLinkedList implements ILinkedList
     }
 
 
+    SingleLinkedList()
+    {
+        size = 0;
+        head = null;
+        tail = null;
+    }
+
+    SingleLinkedList(Object element)
+    {
+        size = 1;
+        this.add(element);
+    }
+
     SingleLinkedList(Object[] elements)
     {
         size = elements.length;
@@ -28,18 +41,12 @@ public class SingleLinkedList implements ILinkedList
         }
     }
 
-    SingleLinkedList()
-    {
-        size = 0;
-        head = null;
-        tail = null;
-    }
 
     
     public void add(Object element)
     {
         Node newNode = new Node(element, null);
-        tail.next = newNode;
+        if (tail != null) tail.next = newNode;
         tail = newNode;
         head = (head == null) ? newNode : head;
         size++;
@@ -48,7 +55,12 @@ public class SingleLinkedList implements ILinkedList
     
     public void add(Object element, int index) throws IndexOutOfBoundsException
     {
-        if (index < 0 || index > size-1) throw new IndexOutOfBoundsException("Added Index is out of bounds.");
+        if (index < 0 || index > size) throw new IndexOutOfBoundsException("Added Index is out of bounds.");
+        if (index == size)
+        {
+            this.add(element);
+            return;
+        } 
         Node newNode;
         if (index == 0)
         {
@@ -97,6 +109,12 @@ public class SingleLinkedList implements ILinkedList
     public void remove(int index) throws IndexOutOfBoundsException
     {
         if (index < 0 || index > size-1) throw new IndexOutOfBoundsException("Removed index is out of bounds.");
+        if (index == 0)
+        {
+            head = head.next;
+            size--;
+            return;
+        }
         Node currentNode = head;
         while (index-- > 1)
         {
@@ -120,7 +138,7 @@ public class SingleLinkedList implements ILinkedList
 
     public ILinkedList sublist(int from, int to) throws IndexOutOfBoundsException
     {
-        if (from > to) throw new IndexOutOfBoundsException("Illegal index bounds.");
+        if (from > to || from < 0 || to >= size) throw new IndexOutOfBoundsException("Illegal index bounds.");
         SingleLinkedList result = new SingleLinkedList();
         Node currentNode = head;
         
@@ -147,7 +165,7 @@ public class SingleLinkedList implements ILinkedList
         boolean result = false;
         for (int i = 0; i < size; i++)
         {
-            if (currentNode.obj == obj)
+            if (currentNode.obj.equals(obj))
             {
                 result = true;
                 break;
@@ -161,10 +179,6 @@ public class SingleLinkedList implements ILinkedList
     {
         return (size == 0);
     }
-
-
-
-
 
 }
 
