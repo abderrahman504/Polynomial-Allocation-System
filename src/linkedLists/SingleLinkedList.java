@@ -28,13 +28,13 @@ public class SingleLinkedList implements ILinkedList
 
     SingleLinkedList(Object element)
     {
-        size = 1;
+        size = 0;
         this.add(element);
     }
 
     SingleLinkedList(Object[] elements)
     {
-        size = elements.length;
+        size = 0;
         for (Object i : elements)
         {
             this.add(i);

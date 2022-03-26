@@ -1,215 +1,192 @@
 package linkedLists;
 
-interface ILinkedList {
-/**
-* Inserts a specified element at the specified position in the list.
-* @param index
-* @param element
-*/
-public void add(int index, Object element);
-/**
-* Inserts the specified element at the end of the list.
-* @param element
-*/
-public void add(Object element);
-/**
-* @param index
-* @return the element at the specified position in this list.
-*/
-public Object get(int index);
-
-/**
-* Replaces the element at the specified position in this list with the
-* specified element.
-* @param index
-* @param element
-*/
-public void set(int index, Object element);
-/**
-* Removes all of the elements from this list.
-*/
-public void clear();
-/**
-* @return true if this list contains no elements.
-*/
-public boolean isEmpty();
-/**
-* Removes the element at the specified position in this list.
-* @param index
-*/
-public void remove(int index);
-/**
-* @return the number of elements in this list.
-*/
-public int size();
-/**
-* @param fromIndex
-* @param toIndex
-* @return a view of the portion of this list between the specified fromIndex and toIndex, inclusively.
-*/
-public ILinkedList sublist(int fromIndex, int toIndex);
-/**
-* @param o
-* @return true if this list contains an element with the same value as the specified element.
-*/
-public boolean contains(Object o);
-}
-
-
-public class DoubleLinkedList implements ILinkedList {
+public class DoubleLinkedList implements ILinkedList 
+{
+    private Node first, last;
+    private int size;
     
-    static Node first, last;
-    
-    static class Node{
-        int data;
+    class Node
+    {
+        Object data;
         Node next, prev;
 
-        Node(int s)
+        Node(Object s, Node prev, Node next)
         {
             this.data = s;
-            this.next = this.prev = null;
+            this.next = next;
+            this.prev = prev;
         }
     }
 
-    public void add(int index, Object element) throws NullPointerException{
-        if (index < 0 || index >= size())
-            throw new NullPointerException();
-        else
+    DoubleLinkedList()
+    {
+        first = last = null;
+        size = 0;
+    }
+    
+    DoubleLinkedList(Object element)
+    {
+        size = 0;
+        this.add(element);
+    }
+
+    DoubleLinkedList(Object[] elements)
+    {
+        size = 0;
+        for (Object i : elements)
         {
-            Node newNode = new Node((Integer) element);
-            newNode.data = (Integer) element;
-            if (index == 0)
-            {
-                newNode.next = first;
-                newNode.prev = null;
-                first.prev = newNode;
-                first = newNode;
-            }
-            else
-            {
-                Node temp = first;
-                for (int i = 0; i < index - 1; i++)
-                    temp = temp.next;
-                newNode.prev = temp;
-                newNode.next = temp.next;
-                temp.next = newNode;
-                temp.next.prev = newNode;
-            }
+            this.add(i);
         }
     }
 
     public void add(Object element){
-        Node newNode = new Node( (Integer) element);
-        newNode.data = (Integer) element;
+        Node newNode = new Node(element, last, null);
         if (size() == 0)
         {
             first = last = newNode;
-            newNode.next = newNode.prev = null;
+            size++;
+            return;
+        }
+
+        last.next = newNode;
+        last = newNode;
+        size++;
+        
+    }
+
+    public void add(Object element, int index) throws IndexOutOfBoundsException
+    {
+        if (index < 0 || index > size()) throw new IndexOutOfBoundsException("Added index out of bounds");
+        if (index == size())
+        {
+            add(element);
+            return;
+        }
+        Node newNode;
+        if (index == 0)
+        {
+            newNode = new Node(element, null, first);
+            first.prev = newNode;
+            first = newNode;
+            size++;
+            return;
+        }
+        Node currentNode;
+        if (index < size/2)
+        {
+            currentNode = first;
+            for (int i = 0; i != index-1; i++) currentNode = currentNode.next;
+        }
+        else 
+        {
+            currentNode = last;
+            for (int i = size()-1; i != index-1; i--) currentNode = currentNode.prev;
+        }
+        newNode  = new Node(element, currentNode, currentNode.next);
+        (currentNode.next).prev = newNode;
+        currentNode.next = newNode;
+        size++;
+    }
+
+    public Object get(int index) throws IndexOutOfBoundsException
+    {
+        if (index < 0 || index >= size()) throw new IndexOutOfBoundsException("Accessed index is out of bounds.");
+        
+        Node currentNode;
+        if (index < size()/2)
+        {
+            currentNode = first;
+            for (int i = 0; i != index; i++) currentNode = currentNode.next;
+            
         }
         else
         {
-            newNode.next = null;
-            newNode.prev = last;
-            last.next = newNode;
-            last = newNode;
+            currentNode = last;
+            for (int i = size()-1; i != index; i--) currentNode = currentNode.prev;
         }
+        return currentNode.data;
     }
 
-    public Object get(int index) throws NullPointerException{
-        if (index < 0 || index > size() || size() == 0)
-            throw new NullPointerException();
-        Node temp = first;
-        for (int i = 0; i < index; i++)
-            temp = temp.next;
-        return temp.data;
-    }
+    public void set(int index, Object element) throws IndexOutOfBoundsException{
+        if (index < 0 || index >= size()) throw new IndexOutOfBoundsException("Accessed index is out of bounds.");
 
-    public void set(int index, Object element) throws NullPointerException{
-        if (index < size() && index >= 0 || size() == 0)
+        Node currentNode;
+        if (index < size()/2)
         {
-            Node newNode = new Node((Integer) element);
-            newNode.data = (Integer) element;
-
-            Node temp = first;
-            for (int i = 0; i < index; i++)
-                temp = temp.next;
-            temp.data = newNode.data;
+            currentNode = first;
+            for (int i = 0; i != index; i++) currentNode = currentNode.next;
         }
         else
         {
-            throw new NullPointerException();
+            currentNode = last;
+            for (int i = size()-1; i != index; i--) currentNode = currentNode.prev;
         }
-
+        currentNode.data = element;
     }
 
     public void clear(){
         first = null;
+        last = null;
+        size = 0;
     }
 
     public boolean isEmpty(){
-        return (first == null);
+        return (size == 0);
     }
 
-    public void remove(int index) throws NullPointerException{
-        if (index < 0 || index >= size() || size() == 0)
-            throw new NullPointerException();
+    public void remove(int index) throws IndexOutOfBoundsException{
+        if (index < 0 || index >= size()) throw new IndexOutOfBoundsException("Removed index is out of bounds.");
+
+        if (index == 0)
+        {
+            first.next.prev = null;
+            first = first.next;
+            size--;
+            return;
+        }
+        if (index == size-1)
+        {
+            last.prev.next = null;
+            last = last.prev;
+            size--;
+            return;
+        }
+
+        Node currentNode;
+
+        if (index < size()/2)
+        {
+            currentNode = first;
+            for (int i = 0; i != index; i++) currentNode = currentNode.next;
+        }
         else
         {
-            Node currentNode = first, prevNode = null;
-            if (index == 0 && currentNode != null)
-            {
-                first = currentNode.next;
-                first.prev = null;
-                return;
-            }
-            int counter = 0;
-            while (currentNode != null)
-            {
-                if (counter == index)
-                {
-                    prevNode.next = currentNode.next;
-                    currentNode.prev = prevNode;
-                    break;
-                }
-                else
-                {
-                    counter ++;
-                    prevNode = currentNode;
-                    currentNode.prev = currentNode;
-                    currentNode = currentNode.next;
-                    prevNode.next = currentNode;
-                }
-            }
+            currentNode = last;
+            for (int i = size()-1; i != index; i--) currentNode = currentNode.prev;
         }
+        currentNode.prev.next = currentNode.next;
+        currentNode.next.prev = currentNode.prev;
+        size--;
     }
 
-    public int size(){
-        int counter = 0;
-        Node temp = first;
-        while (temp != null)
-        {
-            counter ++;
-            temp = temp.next;
-        }
-        return counter;
+    public int size()
+    {
+        return size;
     }
 
-    public ILinkedList sublist(int fromIndex, int toIndex){
-        if (fromIndex > toIndex || (fromIndex < 0 || toIndex >= size() || fromIndex >= size()))
-            throw new NullPointerException();
+    public ILinkedList sublist(int fromIndex, int toIndex) throws IndexOutOfBoundsException
+    {
+        if (fromIndex > toIndex || fromIndex < 0 || toIndex >= size()) throw new IndexOutOfBoundsException("Illegal index bounds.");
 
-        Node newNode = first;
-        for (int i = 0; i < fromIndex; i++)
-            newNode = newNode.next;
-
+        Node currentNode = first;
         DoubleLinkedList sub = new DoubleLinkedList();
-        first = newNode;
-        for (int j = fromIndex; j < toIndex; j++)
+        
+        for (int i = 0; i != fromIndex; i++) currentNode = currentNode.next;
+        for (int j = fromIndex; j != toIndex+1; j++)
         {
-            sub.add(newNode.data);
-            newNode = newNode.next;
+            sub.add(currentNode.data);
+            currentNode = currentNode.next;
         }
-        newNode.next = null;
         return sub;
     }
 
@@ -217,29 +194,10 @@ public class DoubleLinkedList implements ILinkedList {
         Node temp = first;
         for (int i = 0; i < size(); i++)
         {
-            if (temp.data ==(Integer) o)
+            if (temp.data.equals(o))
                 return true;
             temp = temp.next;
         }
         return false;
     }
-
-    public void printList()
-    {
-        Node currNode = first;
-        int counter = 0;
-        System.out.print("[");
-        
-        while (currNode != null) {  // Traverse 
-            if (counter < size() - 1)
-                System.out.print(currNode.data + ", ");
-            else
-                System.out.print(currNode.data);
-            // Go to next node
-            currNode = currNode.next;
-            counter++;
-        }
-        System.out.print("]");
-    }
-
 }
