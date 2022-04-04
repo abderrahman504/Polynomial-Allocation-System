@@ -5,4 +5,4 @@ All source files are in the directory names "src".
 
 The "src" directory contains the main source file called "App.java". There is also a package that contains the implementation of single, double linked lists in the directory names "linkedLists".
 
-The linked lists are have been created by the auther as part of the university assignment.
+The linked lists are have been created by the authors as part of the university assignment.
