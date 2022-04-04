@@ -19,20 +19,20 @@ public class SingleLinkedList implements ILinkedList
     }
 
 
-    SingleLinkedList()
+    public SingleLinkedList()
     {
         size = 0;
         head = null;
         tail = null;
     }
 
-    SingleLinkedList(Object element)
+    public SingleLinkedList(Object element)
     {
         size = 0;
         this.add(element);
     }
 
-    SingleLinkedList(Object[] elements)
+    public SingleLinkedList(Object[] elements)
     {
         size = 0;
         for (Object i : elements)
